@@ -56,7 +56,7 @@ function logEntry($data) {
 	
 //	$PLAYLIST_NAME = $PLAYLIST_NAME.$PLAYLIST_EXTENSION;
 	
-	if($DEBUG) {
+
 
 	logEntry( "OPEN: ".$OPEN);
 	logEntry("Playlist name: ".$PLAYLIST_NAME);
@@ -66,7 +66,7 @@ function logEntry($data) {
 	logEntry("RANDOM: ".$RANDOM);
 	logEntry("CLOSE: ".$CLOSE);
 	logEntry("PREFIX: ".$PREFIX);
-	}
+	
 	
 	$randomMusic = array();
 	
