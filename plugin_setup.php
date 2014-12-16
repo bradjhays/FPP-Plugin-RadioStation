@@ -44,9 +44,16 @@ if(isset($_POST['submit']))
   //  $cronCmd = "*/5 * * * * /home/ramesh/backup.sh";
     	
   //  $addToCronCmd = "echo ".$cronCmd." >> "
+  
+    //run the randomizer
+    
 
+	//echo "RANDOMIZING";
+
+	$cmd = "/usr/bin/php /opt/fpp/plugins/".$pluginName."/randomizer.php";
+	
+	system($cmd,$output);
 }
-
 	
 
 	//load the file settings using the library scrubfile
@@ -161,6 +168,7 @@ PrintMediaOptions("OPEN",$OPEN);
 ?>
 <p/>
 <input id="submit_button" name="submit" type="submit" class="buttons" value="Save Config">
+
 </form>
 
 
