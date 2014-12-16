@@ -32,14 +32,19 @@ function logEntry($data) {
 
 if(isset($_POST['submit']))
 {
+	
+	$PLAYLIST_NAME = preg_replace('/\s+/', '', $_POST["PLAYLIST_NAME"]);
+	
     WriteSettingToFile("OPEN",$_POST["OPEN"],$pluginName);
     
     WriteSettingToFile("CLOSE",$_POST["CLOSE"],$pluginName);
-    WriteSettingToFile("PLAYLIST_NAME",$_POST["PLAYLIST_NAME"],$pluginName);
+    WriteSettingToFile("PLAYLIST_NAME",$PLAYLIST_NAME,$pluginName);
     WriteSettingToFile("ANNOUNCE_1",$_POST["ANNOUNCE_1"],$pluginName);
     WriteSettingToFile("ANNOUNCE_2",$_POST["ANNOUNCE_2"],$pluginName);
     WriteSettingToFile("ANNOUNCE_3",$_POST["ANNOUNCE_3"],$pluginName);
-    WriteSettingToFile("RANDOM",$_POST["RANDOM"],$pluginName);
+    WriteSettingToFile("RANDOM",trim($_POST["RANDOM"]),$pluginName);
+    WriteSettingToFile("PREFIX",trim($_POST["PREFIX"]),$pluginName);
+    
     
   //  $cronCmd = "*/5 * * * * /home/ramesh/backup.sh";
     	
@@ -65,6 +70,7 @@ if(isset($_POST['submit']))
 	$ANNOUNCE_3 = ReadSettingFromFile("ANNOUNCE_3",$pluginName);
 	$RANDOM = ReadSettingFromFile("RANDOM",$pluginName);
 	$PLAYLIST_NAME = ReadSettingFromFile("PLAYLIST_NAME",$pluginName);
+	$PREFIX = ReadSettingFromFile("PREFIX",$pluginName);
 	
 	
 
@@ -88,12 +94,13 @@ if(isset($_POST['submit']))
 
 <p>Known Issues:
 <ul>
-<li>Filenames of Media cannot have spaces in them right now :(</li>
+<li>Filenames of Media or Playlist name cannot have spaces in them right now :(</li>
 </ul>
 
 <p>Configuration:
 <ul>
 <li>Configure your Songs, Open, Close static announcements</li>
+<li>If you want to automatically randomize your playlist entires, you can include the config from the Crontab file located inside the plugin folder</li>
 </ul>
 
 <form method="post" action="http://<? echo $_SERVER['SERVER_NAME']?>/plugin.php?plugin=RadioStation&page=plugin_setup.php">
@@ -158,11 +165,21 @@ PrintMediaOptions("OPEN",$OPEN);
   PrintMediaOptions("ANNOUNCE_3",$ANNOUNCE_3);
   
   echo "<p/> \n";
-  echo "Random # of songs between Announcements: ";
+  echo "# of songs between Announcements: (Will be randomized)";
   
   echo "<input type=\"text\" name=\"RANDOM\" size=\"4\" value=\"".$RANDOM."\"> \n";
 			
-			
+  echo "<p/> \n";
+  echo "Prefix of Audio Files to use EXAMPLE: (see below) ";
+  
+  if($PREFIX == "") {
+  	$PREFIX="RADIO-";
+  }
+  
+  echo "<input type=\"text\" name=\"PREFIX\" size=\"16\" value=\"".$PREFIX."\"> \n";
+  echo "<pre>".$PREFIX."CHRISTMASSONG.mp3</pre> ";
+  
+
   
 
 ?>

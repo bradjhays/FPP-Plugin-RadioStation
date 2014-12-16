@@ -18,6 +18,7 @@ $RANDOM="";
 $PLAYLIST_NAME="";
 $PLAYLIST_EXTENSION=".fseq";
 $DEBUG=false;
+$PREFIX="";
 
 
 $radioStationControlSettingsFile = $settings['mediaDirectory'] . "/config/plugin.".$pluginName;
@@ -44,6 +45,7 @@ function logEntry($data) {
 	
 	$OPEN = ReadSettingFromFile("OPEN",$pluginName);
 	$CLOSE = ReadSettingFromFile("CLOSE",$pluginName);
+	$PREFIX = ReadSettingFromFile("PREFIX",$pluginName);
 	$ANNOUNCE_1 = ReadSettingFromFile("ANNOUNCE_1",$pluginName);
 	$ANNOUNCE_2 = ReadSettingFromFile("ANNOUNCE_2",$pluginName);
 	$ANNOUNCE_3 = ReadSettingFromFile("ANNOUNCE_3",$pluginName);
@@ -56,23 +58,41 @@ function logEntry($data) {
 	
 	if($DEBUG) {
 
-	echo "OPEN: ".$OPEN."<br/> \n";
-	echo "Playlist name: ".$PLAYLIST_NAME."<br/> \n";
-	echo "ANNOUNCE_1: ".$ANNOUNCE_1."<br/> \n";
-	echo "ANNOUNCE_2: ".$ANNOUNCE_2."<br/> \n";
-	echo "ANNOUNCE 3: ".$ANNOUNCE_3."<br/> \n";
-	echo "RANDOM: ".$RANDOM."<br/> \n";
-	echo "CLOSE: ".$CLOSE;
+	logEntry( "OPEN: ".$OPEN);
+	logEntry("Playlist name: ".$PLAYLIST_NAME);
+	logEntry("ANNOUNCE_1: ".$ANNOUNCE_1);
+	logEntry("ANNOUNCE_2: ".$ANNOUNCE_2);
+	logEntry("ANNOUNCE 3: ".$ANNOUNCE_3);
+	logEntry("RANDOM: ".$RANDOM);
+	logEntry("CLOSE: ".$CLOSE);
+	logEntry("PREFIX: ".$PREFIX);
 	}
 	
 	$randomMusic = array();
 	
 	
 	
-	$mediaEntries = array_merge(scandir($musicDirectory),scandir($videoDirectory));
+	//$mediaEntries = array_merge(scandir($musicDirectory),scandir($videoDirectory));
+	//$mediaEntries = scandir($musicDirectory."/".$PREFIX."*");
+	$mediaEntries=array();
+	
+	
+	if($DEBUG)
+	echo "music directory : ".$musicDirectory."<br/> \n";
+	
+	$files = array();
+	foreach (glob($musicDirectory."/".$PREFIX."*.*") as $file) {
+		//$files[] = $file;
+		$mediaEntries[]=pathinfo($file,PATHINFO_BASENAME);
+	}
+	if($DEBUG)
+	print_r($mediaEntries);
+	
 	sort($mediaEntries);
 	foreach($mediaEntries as $mediaFile)
 	{
+		//$mediaFile = $PREFIX.$mediaFile;
+	
 		if($mediaFile != '.' && $mediaFile != '..' && $mediaFile != $ANNOUNCE_1 && $mediaFile != $ANNOUNCE_2 && $mediaFile != $ANNOUNCE_3 && $mediaFile != $CLOSE) 
 
 			{
@@ -90,17 +110,18 @@ function logEntry($data) {
 		echo "count random music: ".count($randomMusic)."<br/> \n";
 	
 	if($DEBUG)
-	echo "Random number of entries to use (must be less than amount of announcements, and open and close) : ".$RANDOM."<br/> \n";
+		echo "Random number of entries to use (must be less than amount of announcements, and open and close) : ".$RANDOM."<br/> \n";
 	
 	
-	$TOTAL_STATIC_FILES = 5;
+	//$TOTAL_STATIC_FILES = 5;
 	
-	if($totalMusicFileCount < $TOTAL_STATIC_FILES) {
-		if($DEBUG)
-		echo "total files to choose from is less than static files available after announcements, etc";
-		exit(0);
+//	if($totalMusicFileCount < $TOTAL_STATIC_FILES) {
+	//	if($DEBUG)
+			
+//	logEntry("total files to choose from is less than static files available after announcements, etc");
+	//	exit(0);
 	
-	}
+//	}
 	
 	
 	//we have enough music files to choose from :)
