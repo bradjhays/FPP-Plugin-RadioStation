@@ -165,7 +165,7 @@ PrintMediaOptions("OPEN",$OPEN);
   PrintMediaOptions("ANNOUNCE_3",$ANNOUNCE_3);
   
   echo "<p/> \n";
-  echo "# of songs between Announcements: (Will be randomized)";
+  echo "Maximum # of songs between Announcements: (Will be randomized, and depending on amount of files availble, may be less)";
   
   echo "<input type=\"text\" name=\"RANDOM\" size=\"4\" value=\"".$RANDOM."\"> \n";
 			
