@@ -19,6 +19,7 @@ $PLAYLIST_NAME="";
 $PLAYLIST_EXTENSION=".fseq";
 $DEBUG=false;
 $PREFIX="";
+$ENABLED="";
 
 
 $radioStationControlSettingsFile = $settings['mediaDirectory'] . "/config/plugin.".$pluginName;
@@ -43,6 +44,13 @@ function logEntry($data) {
 
 	//load the file settings using the library scrubfile
 	
+	$ENABLED = ReadSettingFromFile("ENABLED",$pluginName);
+	
+	if($ENABLED == "OFF") {
+		logEntry($pluginName. " DISABLED: Exiting");
+		exit(0);
+	}
+	
 	$OPEN = ReadSettingFromFile("OPEN",$pluginName);
 	$CLOSE = ReadSettingFromFile("CLOSE",$pluginName);
 	$PREFIX = ReadSettingFromFile("PREFIX",$pluginName);
@@ -50,7 +58,7 @@ function logEntry($data) {
 	$ANNOUNCE_2 = ReadSettingFromFile("ANNOUNCE_2",$pluginName);
 	$ANNOUNCE_3 = ReadSettingFromFile("ANNOUNCE_3",$pluginName);
 	$RANDOM = ReadSettingFromFile("RANDOM",$pluginName);
-	$PLAYLIST_NAME = ReadSettingFromFile("PLAYLIST_NAME",$pluginName);
+	$PLAYLIST_NAME = urldecode(ReadSettingFromFile("PLAYLIST_NAME",$pluginName));
 	
 	$PLAYLIST_NAME = $settings['mediaDirectory'] . "/playlists/".$PLAYLIST_NAME;//.$PLAYLIST_EXTENSION;
 	

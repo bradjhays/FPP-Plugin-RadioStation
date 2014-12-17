@@ -33,9 +33,10 @@ function logEntry($data) {
 if(isset($_POST['submit']))
 {
 	
-	$PLAYLIST_NAME = preg_replace('/\s+/', '', $_POST["PLAYLIST_NAME"]);
-	
+	//$PLAYLIST_NAME = preg_replace('/\s+/', '', $_POST["PLAYLIST_NAME"]);
+	$PLAYLIST_NAME = urlencode($_POST["PLAYLIST_NAME"]);
     WriteSettingToFile("OPEN",$_POST["OPEN"],$pluginName);
+    WriteSettingToFile("ENABLED",$_POST["ENABLED"],$pluginName);
     
     WriteSettingToFile("CLOSE",$_POST["CLOSE"],$pluginName);
     WriteSettingToFile("PLAYLIST_NAME",$PLAYLIST_NAME,$pluginName);
@@ -69,9 +70,9 @@ if(isset($_POST['submit']))
 	$ANNOUNCE_2 = ReadSettingFromFile("ANNOUNCE_2",$pluginName);
 	$ANNOUNCE_3 = ReadSettingFromFile("ANNOUNCE_3",$pluginName);
 	$RANDOM = ReadSettingFromFile("RANDOM",$pluginName);
-	$PLAYLIST_NAME = ReadSettingFromFile("PLAYLIST_NAME",$pluginName);
+	$PLAYLIST_NAME = urldecode(ReadSettingFromFile("PLAYLIST_NAME",$pluginName));
 	$PREFIX = ReadSettingFromFile("PREFIX",$pluginName);
-	
+	$ENABLED = ReadSettingFromFile("ENABLED",$pluginName);
 	
 
 //	echo "OPEN: ".$OPEN."<br/> \n";
@@ -94,13 +95,14 @@ if(isset($_POST['submit']))
 
 <p>Known Issues:
 <ul>
-<li>Filenames of Media or Playlist name cannot have spaces in them right now :(</li>
+<li>NONE </li>
 </ul>
 
 <p>Configuration:
 <ul>
 <li>Configure your Songs, Open, Close static announcements</li>
 <li>If you want to automatically randomize your playlist entires, you can include the config from the Crontab file located inside the plugin folder</li>
+<li>The randomizer will randomly select and schedule songs matching the prefix that you configure below. This allows you to use songs outside of your show.</li>
 </ul>
 
 <form method="post" action="http://<? echo $_SERVER['SERVER_NAME']?>/plugin.php?plugin=RadioStation&page=plugin_setup.php">
@@ -112,56 +114,35 @@ if(isset($_POST['submit']))
 $restart=0;
 $reboot=0;
 
-echo "Playlist Name (NoSpaces): ";
+echo "ENABLE PLUGIN: ";
+PrintSettingCheckbox("Radio Station", "ENABLED", $restart = 0, $reboot = 0, "ON", "OFF", $pluginName = $pluginName, $callbackName = "");
+
+echo "<p/> \n";
+
+echo "Playlist Name: ";
 
 echo "<input type=\"text\" name=\"PLAYLIST_NAME\" size=\"32\" value=\"".$PLAYLIST_NAME."\"> \n";
 	
 
 echo "<hr> \n";
-echo "OPEN: ";
+echo "OPEN: \t";
 PrintMediaOptions("OPEN",$OPEN);
- function PrintMediaOptions($selectName,$selectedOption)
-  {
-	  global $musicDirectory;
-	  global $videoDirectory;
-	  global $OPEN;
-	 // echo "OPEN: ".$OPEN."<br/> \n";
-		echo "<select name=\"".$selectName."\">";
-
-	$mediaEntries = array_merge(scandir($musicDirectory),scandir($videoDirectory));
-	sort($mediaEntries);
-    foreach($mediaEntries as $mediaFile) 
-    {
-      if($mediaFile != '.' && $mediaFile != '..')
-      {
-      	if($selectedOption != "" && $selectedOption == $mediaFile) {	
-
-			echo "<option selected value=\"" . $mediaFile . "\">" . $mediaFile . "</option>";
  
-		} else {
-
-	        echo "<option value=\"" . $mediaFile . "\">" . $mediaFile . "</option>";
-    	}
-	  }
-    }
-		echo "</select>";
-  }			
-  
   echo "<p/> \n";
   
-  echo "CLOSE: ";
+  echo "CLOSE: \t";
   PrintMediaOptions("CLOSE",$CLOSE);
   
   echo "<p/> \n";
-  echo "Announce 1: ";
+  echo "ANNOUNCE 1: \t";
   PrintMediaOptions("ANNOUNCE_1",$ANNOUNCE_1);
   
   echo "<p/> \n";
-  echo "ANNOUNCE 2: ";
+  echo "ANNOUNCE 2: \t";
   PrintMediaOptions("ANNOUNCE_2",$ANNOUNCE_2);
   
   echo "<p/> \n";
-  echo "ANNOUNCE 3: ";
+  echo "ANNOUNCE 3: \t";
   PrintMediaOptions("ANNOUNCE_3",$ANNOUNCE_3);
   
   echo "<p/> \n";
@@ -180,6 +161,32 @@ PrintMediaOptions("OPEN",$OPEN);
   echo "<pre>".$PREFIX."CHRISTMASSONG.mp3</pre> ";
   
 
+  function PrintMediaOptions($selectName,$selectedOption)
+  {
+  	global $musicDirectory;
+  	global $videoDirectory;
+  	global $OPEN;
+  	// echo "OPEN: ".$OPEN."<br/> \n";
+  	echo "<select name=\"".$selectName."\">";
+  
+  	$mediaEntries = array_merge(scandir($musicDirectory),scandir($videoDirectory));
+  	sort($mediaEntries);
+  	foreach($mediaEntries as $mediaFile)
+  	{
+  		if($mediaFile != '.' && $mediaFile != '..')
+  		{
+  			if($selectedOption != "" && $selectedOption == $mediaFile) {
+  
+  				echo "<option selected value=\"" . $mediaFile . "\">" . $mediaFile . "</option>";
+  
+  			} else {
+  
+  				echo "<option value=\"" . $mediaFile . "\">" . $mediaFile . "</option>";
+  			}
+  		}
+  	}
+  	echo "</select>";
+  }
   
 
 ?>
