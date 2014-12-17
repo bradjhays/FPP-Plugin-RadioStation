@@ -20,9 +20,16 @@ $PLAYLIST_EXTENSION=".fseq";
 $DEBUG=false;
 $PREFIX="";
 $ENABLED="";
+$RANDOM_REPEAT="";
+$MAJOR="99";
+$MINOR="99";
+
+$radioStationRadomizerEventName = $pluginName."_RANDOMIZER";
 
 
 $radioStationControlSettingsFile = $settings['mediaDirectory'] . "/config/plugin.".$pluginName;
+
+
 
 $radioStationSettings = array();
 
@@ -30,6 +37,8 @@ $radioStationSettings = array();
 //arg1 is the first argument in the registration this will be --list
 //$DEBUG=true;
 $logFile = $settings['logDirectory']."/".$pluginName.".log";
+
+
 
 function logEntry($data) {
 
@@ -46,10 +55,12 @@ function logEntry($data) {
 	
 	$ENABLED = ReadSettingFromFile("ENABLED",$pluginName);
 	
-	if($ENABLED == "OFF") {
+	if($ENABLED == "") {
 		logEntry($pluginName. " DISABLED: Exiting");
 		exit(0);
 	}
+	$RANDOM_REPEAT = ReadSettingFromFile("RANDOM_REPEAT",$pluginName);
+	
 	
 	$OPEN = ReadSettingFromFile("OPEN",$pluginName);
 	$CLOSE = ReadSettingFromFile("CLOSE",$pluginName);
@@ -74,6 +85,7 @@ function logEntry($data) {
 	logEntry("RANDOM: ".$RANDOM);
 	logEntry("CLOSE: ".$CLOSE);
 	logEntry("PREFIX: ".$PREFIX);
+	logEntry("RANDOM_REPEAT: ".$RANDOM_REPEAT);
 	
 	
 	$randomMusic = array();
@@ -145,7 +157,7 @@ function logEntry($data) {
 	function createPlaylistFile() {
 
 		global $PLAYLIST_NAME;
-		global $OPEN, $CLOSE, $ANNOUNCE_1,$ANNOUNCE_2,$ANNOUNCE_3,$RANDOM_MUSIC_LIST,$RANDOM,$randomMusic;
+		global $OPEN, $CLOSE, $ANNOUNCE_1,$ANNOUNCE_2,$ANNOUNCE_3,$RANDOM_MUSIC_LIST,$RANDOM,$randomMusic,$RANDOM_REPEAT,$MAJOR,$MINOR;
 		
 		$i=0;
 		$type ="m";
@@ -245,6 +257,9 @@ function logEntry($data) {
 		
 		}
 		
+		if($RANDOM_REPEAT == 1) {
+			$str .= "e" . "," .$MAJOR."_".$MINOR .",\n";
+		}
 		$str .= $type . "," .$CLOSE.",\n";
 		
 		
