@@ -67,7 +67,7 @@ if(isset($_POST['submit']))
 
 	//echo "RANDOMIZING";
 
-	$cmd = "/usr/bin/php /opt/fpp/plugins/".$pluginName."/randomizer.php";
+	$cmd = "/usr/bin/php ".$pluginDirectory."/".$pluginName."/randomizer.php";
 	
 	system($cmd,$output);
 }
@@ -176,7 +176,7 @@ if(isset($_POST['submit']))
 <li>If selected: Randomize on Repeat the plugin will automatically insert an Event to a script to call the randomizer during the second to last
 executing item in the playlist. So upon playlist repeat (you must manually enable this feature) in the Scheduler or manually when playing the playlist on the Status Screen</li>
 </ul>
-<form method="post" action="http://<? echo $_SERVER['SERVER_NAME']?>/plugin.php?plugin=RadioStation&page=plugin_setup.php">
+<form method="post" action="http://<? echo $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']?>/plugin.php?plugin=RadioStation&page=plugin_setup.php">
 
 <p/>
 
