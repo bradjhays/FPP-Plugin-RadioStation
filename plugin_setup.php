@@ -2,6 +2,8 @@
 //$DEBUG=true;
 
 include_once "/opt/fpp/www/common.php";
+include_once 'functions.inc.php';
+include_once 'commonFunctions.inc.php';
 $pluginName = "RadioStation";
 $OPEN="";
 $CLOSE="";
@@ -31,15 +33,7 @@ $radioStationSettings = array();
 
 $logFile = $settings['logDirectory']."/".$pluginName.".log";
 
-function logEntry($data) {
 
-	global $logFile;
-
-	$data = $_SERVER['PHP_SELF']." : ".$data;
-	$logWrite= fopen($logFile, "a") or die("Unable to open file!");
-	fwrite($logWrite, date('Y-m-d h:i:s A',time()).": ".$data."\n");
-	fclose($logWrite);
-}
 
 if(isset($_POST['submit']))
 {
@@ -47,7 +41,7 @@ if(isset($_POST['submit']))
 	//$PLAYLIST_NAME = preg_replace('/\s+/', '', $_POST["PLAYLIST_NAME"]);
 	$PLAYLIST_NAME = urlencode($_POST["PLAYLIST_NAME"]);
     WriteSettingToFile("OPEN",$_POST["OPEN"],$pluginName);
-    WriteSettingToFile("ENABLED",$_POST["ENABLED"],$pluginName);
+   // WriteSettingToFile("ENABLED",$_POST["ENABLED"],$pluginName);
     WriteSettingToFile("RANDOM_REPEAT",$_POST["RANDOM_REPEAT"],$pluginName);
     WriteSettingToFile("CLOSE",$_POST["CLOSE"],$pluginName);
     WriteSettingToFile("PLAYLIST_NAME",$PLAYLIST_NAME,$pluginName);
@@ -73,18 +67,33 @@ if(isset($_POST['submit']))
 }
 	
 
-	//load the file settings using the library scrubfile
+	//load the$PLAYLIST_NAME = urldecode($pluginSettings['PLAYLIST_NAME']); file settings using the library scrubfile
 	
-	$OPEN = ReadSettingFromFile("OPEN",$pluginName);
-	$CLOSE = ReadSettingFromFile("CLOSE",$pluginName);
-	$ANNOUNCE_1 = ReadSettingFromFile("ANNOUNCE_1",$pluginName);
-	$ANNOUNCE_2 = ReadSettingFromFile("ANNOUNCE_2",$pluginName);
-	$ANNOUNCE_3 = ReadSettingFromFile("ANNOUNCE_3",$pluginName);
-	$RANDOM = ReadSettingFromFile("RANDOM",$pluginName);
-	$PLAYLIST_NAME = urldecode(ReadSettingFromFile("PLAYLIST_NAME",$pluginName));
-	$PREFIX = ReadSettingFromFile("PREFIX",$pluginName);
-	$ENABLED = ReadSettingFromFile("ENABLED",$pluginName);
-	$RANDOM_REPEAT = ReadSettingFromFile("RANDOM_REPEAT",$pluginName);
+$OPEN = urldecode($pluginSettings['OPEN']);
+
+	//$OPEN = ReadSettingFromFile("OPEN",$pluginName);
+	$CLOSE =  urldecode($pluginSettings['CLOSE']);
+	
+	$ANNOUNCE_1 = urldecode($pluginSettings['ANNOUNCE_1']);
+	$ANNOUNCE_2 = urldecode($pluginSettings['ANNOUNCE_1']);
+	$ANNOUNCE_3 = urldecode($pluginSettings['ANNOUNCE_3']);
+	
+	$RANDOM = urldecode($pluginSettings['RANDOM']);
+	$PLAYLIST_NAME = urldecode($pluginSettings['PLAYLIST_NAME']);
+	$PREFIX = urldecode($pluginSettings['PREFIX']);
+	$ENABLED = urldecode($pluginSettings['ENABLED']);
+	$RANDOM_REPEAT = urldecode($pluginSettings['RANDOM_REPEAT']);
+	
+	//$CLOSE = ReadSettingFromFile("CLOSE",$pluginName);
+	//$ANNOUNCE_1 = ReadSettingFromFile("ANNOUNCE_1",$pluginName);
+	
+	//$ANNOUNCE_2 = ReadSettingFromFile("ANNOUNCE_2",$pluginName);
+	//$ANNOUNCE_3 = ReadSettingFromFile("ANNOUNCE_3",$pluginName);
+	//$RANDOM = ReadSettingFromFile("RANDOM",$pluginName);
+	//$PLAYLIST_NAME = urldecode(ReadSettingFromFile("PLAYLIST_NAME",$pluginName));
+	//$PREFIX = ReadSettingFromFile("PREFIX",$pluginName);
+	//$ENABLED = ReadSettingFromFile("ENABLED",$pluginName);
+	//$RANDOM_REPEAT = ReadSettingFromFile("RANDOM_REPEAT",$pluginName);
 
 	
 	logEntry("Randmize script file: ".$radioStationRepeatScriptFile);
@@ -92,54 +101,7 @@ if(isset($_POST['submit']))
 		createRandomizerScript();
 		createRandomizerEventFile();
 	}
-	//create script to randmomize
-	function createRandomizerScript() {
-		
-	
-		global $radioStationRepeatScriptFile,$pluginName,$randomizerScript;
-	
-		
-		logEntry("Creating Randomizer script: ".$radioStationRepeatScriptFile);
-		
-		$data = "";
-		$data  = "#!/bin/sh\n";
-		$data .= "\n";
-		$data .= "#Script to run randomizer\n";
-		$data .= "#Created by ".$pluginName."\n";
-		$data .= "#\n";
-		$data .= "/usr/bin/php ".$randomizerScript."\n";
-		
-	
-		$fs = fopen($radioStationRepeatScriptFile,"w");
-		fputs($fs, $data);
-		fclose($fs);
-	
-	}
-	
-	//crate the event file
-	function createRandomizerEventFile() {
-		
-		global $radioStationRepeatScriptFile,$pluginName,$randomizerScript,$radioStationRandomizerEventFile,$MAJOR,$MINOR,$radioStationRadomizerEventName;
-		
-		
-		logEntry("Creating Randomizer event file: ".$radioStationRandomizerEventFile);
-		
-		$data = "";
-		$data .= "majorID=".$MAJOR."\n";
-		$data .= "minorID=".$MINOR."\n";
-		
-		$data .= "name='".$radioStationRadomizerEventName."'\n";
-			
-		$data .= "effect=''\n";
-		$data .="startChannel=\n";
-		$data .= "script='".pathinfo($radioStationRepeatScriptFile,PATHINFO_BASENAME)."'\n";
-		
-		
-		
-		$fs = fopen($radioStationRandomizerEventFile,"w");
-		fputs($fs, $data);
-		fclose($fs);
-	}
+
 //	echo "OPEN: ".$OPEN."<br/> \n";
 //	echo "ANNOUNCE_1: ".$ANNOUNCE_1."<br/> \n";
 //	echo "ANNOUNCE_@: ".$ANNOUNCE_2."<br/> \n";
@@ -176,7 +138,7 @@ if(isset($_POST['submit']))
 <li>If selected: Randomize on Repeat the plugin will automatically insert an Event to a script to call the randomizer during the second to last
 executing item in the playlist. So upon playlist repeat (you must manually enable this feature) in the Scheduler or manually when playing the playlist on the Status Screen</li>
 </ul>
-<form method="post" action="http://<? echo $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']?>/plugin.php?plugin=RadioStation&page=plugin_setup.php">
+<form method="post" action="http://<? echo $_SERVER['SERVER_NAME']?>/plugin.php?plugin=<?echo $pluginName;?>&page=plugin_setup.php">
 
 <p/>
 
@@ -187,12 +149,12 @@ $reboot=0;
 
 echo "ENABLE PLUGIN: ";
 
-if($ENABLED== 1 ) {
-		echo "<input type=\"checkbox\" checked name=\"ENABLED\"> \n";
-//PrintSettingCheckbox("Radio Station", "ENABLED", $restart = 0, $reboot = 0, "ON", "OFF", $pluginName = $pluginName, $callbackName = "");
-	} else {
-		echo "<input type=\"checkbox\"  name=\"ENABLED\"> \n";
-}
+//if($ENABLED== 1 || $ENABLED == "on") {
+	//	echo "<input type=\"checkbox\" checked name=\"ENABLED\"> \n";
+PrintSettingCheckbox("Plugin: ".$pluginName." ", "ENABLED", $restart = 0, $reboot = 0, "ON", "OFF", $pluginName = $pluginName, $callbackName = "");
+//	} else {
+//		echo "<input type=\"checkbox\"  name=\"ENABLED\"> \n";
+//}
 
 
 echo "<p/> \n";
