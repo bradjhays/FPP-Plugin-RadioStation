@@ -5,6 +5,7 @@ include_once "/opt/fpp/www/common.php";
 include_once 'functions.inc.php';
 include_once 'commonFunctions.inc.php';
 $pluginName = "RadioStation";
+$pluginVersion ="1.0";
 $OPEN="";
 $CLOSE="";
 $ANNOUNCE_1="";
@@ -27,6 +28,35 @@ $radioStationRandomizerEventFile = $eventDirectory."/".$MAJOR."_".$MINOR.$eventE
 $radioStationRadomizerEventName = $pluginName."_RANDOMIZER";
 
 $randomizerScript = $pluginDirectory ."/".$pluginName."/"."randomizer.php";
+$gitURL = "https://github.com/LightsOnHudson/FPP-Plugin-RadioStation.git";
+
+
+$pluginUpdateFile = $settings['pluginDirectory']."/".$pluginName."/"."pluginUpdate.inc";
+
+
+logEntry("plugin update file: ".$pluginUpdateFile);
+
+
+if(isset($_POST['updatePlugin']))
+{
+	$updateResult = updatePluginFromGitHub($gitURL, $branch="master", $pluginName);
+
+	logEntry("update result: ". $updateResult);//."<br/> \n";
+
+	if(file_exists($settings['pluginDirectory']."/".$pluginName."/fpp_install.sh"))
+	{
+		$updateInstallCMD = $settings['pluginDirectory']."/".$pluginName."/fpp_install.sh";
+		logEntry("running upgrade install script: ".$updateInstallCMD);
+		exec($updateInstallCMD,$sysOutput);
+		//echo $sysOutput;
+
+	} else {
+		logEntry("No fpp_install.sh upgrade script available");
+	}
+
+
+}
+$DEBUG = $pluginSettings['DEBUG'];
 
 $radioStationSettings = array();
 
@@ -118,7 +148,7 @@ $OPEN = urldecode($pluginSettings['OPEN']);
 
 <div id="RadioStation" class="settings">
 <fieldset>
-<legend>Radio Station control Support Instructions</legend>
+<legend><?php echo $pluginName." Version: ".$pluginVersion;?> Support Instructions</legend>
 
 <p>Known Issues:
 <ul>
@@ -245,10 +275,17 @@ PrintMediaOptions("OPEN",$OPEN);
 <p/>
 <input id="submit_button" name="submit" type="submit" class="buttons" value="Save Config">
 
+<?
+ if(file_exists($pluginUpdateFile))
+ {
+ 	//echo "updating plugin included";
+	include $pluginUpdateFile;
+}
+?>
 </form>
 
 
-<p>To report a bug, please file it against the sms Control plugin project on Git: https://github.com/LightsOnHudson/FPP-Plugin-Radio-Station
+<p>To report a bug, please file it against the sms Control plugin project on Git: <? echo $gitURL;?>
 
 </fieldset>
 </div>
