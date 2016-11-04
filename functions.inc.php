@@ -101,7 +101,7 @@ function getFPPLogLevel() {
 	
 }
 
-}
+
 //is fppd running?????
 function isFPPDRunning() {
 	$FPPDStatus=null;

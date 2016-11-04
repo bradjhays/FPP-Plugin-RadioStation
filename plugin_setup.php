@@ -19,7 +19,7 @@ $eventExtension = ".fevt";
 //arg0 is  the program
 //arg1 is the first argument in the registration this will be --list
 //$DEBUG=true;
-
+$logFile = $settings['logDirectory']."/".$pluginName.".log";
 $radioStationControlSettingsFile = $settings['mediaDirectory'] . "/config/plugin.".$pluginName;
 
 $radioStationRepeatScriptFile = $settings['scriptDirectory'] ."/".$pluginName."_RANDOMIZE.sh";
