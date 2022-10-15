@@ -1,0 +1,18 @@
+{
+    "repoName": "FPP-Plugin-RadioStation",
+    "name": "RadioStation",
+    "author": "Brad Hays",
+    "description": "forked from LightsOnHudson/FPP-Plugin-RadioStation to add multi playlist support",
+    "homeURL": "https://github.com/bradjhays/FPP-Plugin-RadioStation",
+    "srcURL": "https://github.com/bradjhays/FPP-Plugin-RadioStation.git",
+    "bugURL": "https://github.com/bradjhays/FPP-Plugin-RadioStation/issues",
+    "allowUpdates": 1,
+    "versions": [
+        {
+            "minFPPVersion": "6.0",
+            "maxFPPVersion": "0",
+            "branch": "master",
+            "sha": ""
+        }
+    ]
+}
